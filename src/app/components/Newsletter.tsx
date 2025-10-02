@@ -4,7 +4,7 @@ import React, { useState } from "react";
 // Create an API route handler in your Next.js app
 // This component will work with an API route at /api/newsletter
 
-const ComingSoon: React.FC = () => {
+const Newsletter: React.FC = () => {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -58,8 +58,9 @@ const ComingSoon: React.FC = () => {
     <div className="py-20 px-4 flex flex-col items-center justify-center text-center">
       {/* Stylized "much love" text */}
       <div className="relative w-full max-w-3xl mx-auto mb-10">
-        <div className="overflow-hidden">
-          <img src="/heading.png" alt="Love" className="w-2/3 mx-auto" />
+        <div className="flex flex-col text-[#EDEDED] font-balabeloo text-9xl tracking-tighter z-10 text-center scale-95 sm:scale-100 md:scale-125 lg:scale-150 ">
+          <h1>MUCH</h1>
+          <h1 className="-mt-8 lg:-mt-10">LOVE</h1>
         </div>
       </div>
 
@@ -101,4 +102,4 @@ const ComingSoon: React.FC = () => {
   );
 };
 
-export default ComingSoon;
+export default Newsletter;

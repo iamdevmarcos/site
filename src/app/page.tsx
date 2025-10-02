@@ -8,7 +8,7 @@ import { ThemeProvider } from "./theme-provider";
 import Projects from "./components/Projects";
 import Work from "./components/Work";
 import Moments from "./components/Moments";
-import ComingSoon from "./components/Newsletter";
+import Newsletter from "./components/Newsletter";
 
 export default function Home() {
   const [cardHeight, setCardHeight] = useState("100vh");
@@ -58,12 +58,12 @@ export default function Home() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="dakshi-theme">
       <div className="min-h-screen p-0 font-[family-name:var(--font-geist-sans)]">
-        <div
+        {/* <div
           className="card-wrapper mr-10 hidden lg:block"
           style={{ height: cardHeight, position: "absolute", top: 0, right: 0 }}
         >
           <Card />
-        </div>
+        </div> */}
 
         {/* Main content area */}
         <div className="relative">
@@ -103,7 +103,7 @@ export default function Home() {
 
           <hr className="border-t relative w-screen left-[50%] right-[50%] -translate-x-[50%] my-8" />
           <div className="relative min-h-[50vh] w-full z-0" id="newsletter">
-            <ComingSoon />
+            <Newsletter />
           </div>
           <hr className="border-t relative w-screen left-[50%] right-[50%] -translate-x-[50%] my-8" />
         </div>

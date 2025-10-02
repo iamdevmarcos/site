@@ -51,6 +51,7 @@
   --color-link-foreground: var(--link-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-balabeloo: var(--font-balabeloo);
 }
 
 .dark {
