@@ -1,12 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 interface ProjectProps {
   title: string;
   link: string;
   logo: string;
   description: string;
-  preview?: string;
 }
 
 const ProjectItem: React.FC<ProjectProps> = ({
@@ -14,10 +13,7 @@ const ProjectItem: React.FC<ProjectProps> = ({
   link,
   logo,
   description,
-  preview = "/default.png",
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <div className="mb-8">
       <div className="flex items-start">
@@ -28,7 +24,6 @@ const ProjectItem: React.FC<ProjectProps> = ({
             className="w-full h-full rounded-full  object-cover border border-[var(--border)]"
           />
         </div>
-
         <div>
           <span className="relative inline-block">
             <a
@@ -36,8 +31,6 @@ const ProjectItem: React.FC<ProjectProps> = ({
               className="text-base text-[var(--foreground)] decoration-[1px] underline underline-offset-3 decoration-[var(--muted-foreground)] cursor-pointer group flex items-center"
               target="_blank"
               rel="noopener noreferrer"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
             >
               {title}
               <svg
@@ -53,32 +46,6 @@ const ProjectItem: React.FC<ProjectProps> = ({
                 <polyline points="7 7 17 7 17 17"></polyline>
               </svg>
             </a>
-
-            {isHovered && (
-              <div className="absolute z-10 left-full ml-4 top-0 w-72 p-2 shadow-lg bg-[var(--tooltip)] border border-[var(--tooltip-border)] rounded text-sm text-[var(--tooltip-foreground)]">
-                <div className="w-full h-40 overflow-hidden rounded mb-2">
-                  {preview.endsWith(".mp4") ||
-                  preview.endsWith(".webm") ||
-                  preview.endsWith(".mov") ? (
-                    <video
-                      src={preview}
-                      autoPlay
-                      muted
-                      loop
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <img
-                      src={preview}
-                      alt={`${title} preview`}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-                <p className="text-xs">{description}</p>
-                <div className="absolute top-3 -left-2 w-4 h-4 bg-[var(--tooltip)] border-l border-b border-[var(--tooltip-border)] transform rotate-45"></div>
-              </div>
-            )}
           </span>
           <p className="text-sm text-[var(--muted-foreground)] mt-1">
             {description}
@@ -91,63 +58,73 @@ const ProjectItem: React.FC<ProjectProps> = ({
 
 const projects = [
   {
-    title: "RetroUI",
-    link: "https://retroui.io",
+    title: "Focusly",
+    link: "https://focusly-vert.vercel.app/",
     logo: "/projects/retroui.webp",
-    description: "A pixelated retro-style UI component library for websites.",
-    preview: "/projects/retroui-preview.png",
+    description: "Get Things Done, as Planned.",
   },
   {
-    title: "Writingpad",
-    link: "https://writingpad.me",
-    logo: "/projects/writingpad.png",
-    description: "Minimal docs with markdown support and no account required.",
-    preview: "/projects/writingpad-preview.mov",
+    title: "SuperMario.js",
+    link: "https://supermariojs.vercel.app/",
+    logo: "/projects/retroui.webp",
+    description: "Play super mario in the browser using a PlayStation 5 / Xbox controller.",
   },
   {
-    title: "Wave Rider",
-    link: "https://marketplace.visualstudio.com/items?itemName=dakshie.waverider",
-    logo: "/projects/waverider.png",
-    description:
-      "A mini surfing game that one can play in VS Code while coding.",
-    preview: "/projects/waverider-preview.mov",
+    title: "Screen Size Helper",
+    link: "https://www.npmjs.com/package/react-screen-size-helper",
+    logo: "/projects/retroui.webp",
+    description: "A React Hook utility for identifying and working with screen sizes",
   },
   {
-    title: "Jobwrite",
-    link: "https://github.com/Dksie09/jobwriteYT",
-    logo: "/projects/jobwrite.png",
-    description:
-      "Smart job search assistant. scans your github and finds jobs for you.",
-    preview: "/projects/jobwrite-preview.gif  ",
+    title: "Rust Http Server",
+    link: "https://github.com/iamdevmarcos/rust-http-server",
+    logo: "/projects/retroui.webp",
+    description: "Rust http server using Warp. Modular structure for easy scalability and configuration.",
   },
   {
-    title: "Docsy",
-    link: "https://github.com/Dksie09/Docsy",
-    logo: "/projects/docsy.png",
-    description:
-      "A smart extension that skims through the documentation for you, and delivers you the exact parts you were looking for.",
-    preview: "/projects/docsy-preview.mp4",
+    title: "Rust Pendulum",
+    link: "https://github.com/iamdevmarcos/rust-pendulum",
+    logo: "/projects/retroui.webp",
+    description: "Pendulum simulation using Rust and Speedy2D, featuring real-time physics with adjustable parameters and dual pendulum rendering.",
+  },
+  {
+    title: "MacOS Web",
+    link: "https://macos-iamdevmarcos.vercel.app/",
+    logo: "/projects/retroui.webp",
+    description: "MacOS interface with React, TypeScript and Styled Components",
+  },
+  {
+    title: "MyNotes - Android App",
+    link: "https://github.com/iamdevmarcos/myNotes",
+    logo: "/projects/retroui.webp",
+    description: "A Notes app, created in React-Native that provides better personal organization.",
+  },
+  {
+    title: "Next.js Boilerplate",
+    link: "https://github.com/iamdevmarcos/nextjs-boilerplate",
+    logo: "/projects/retroui.webp",
+    description: "A simple project starter to work with TypeScript, React, NextJS and Styled Components",
+  },
+  {
+    title: "react-native-boilerplate",
+    link: "https://github.com/iamdevmarcos/react-native-boilerplate",
+    logo: "/projects/retroui.webp",
+    description: "A React-Native starter kit using Expo, React Navigation, Styled Components, TypeScript and Eslint.",
+  },
+  {
+    title: "whisper-llm",
+    link: "https://github.com/iamdevmarcos/whisper-llm",
+    logo: "/projects/retroui.webp",
+    description: "Interactive voice assistant using Whisper for transcription and GPT-3.5 for natural language responses.",
   },
 ];
 
-const preloadMedia = (preview: string) => {
-  const img = new Image();
-  img.src = preview;
-
-  if (
-    preview.endsWith(".mp4") ||
-    preview.endsWith(".webm") ||
-    preview.endsWith(".mov")
-  ) {
-    const video = document.createElement("video");
-    video.src = preview;
-  }
-};
-
 const Projects: React.FC = () => {
-  useEffect(() => {
-    projects.forEach(({ preview }) => preloadMedia(preview));
-  }, []);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const maxVisibleItems = 4;
+  const hasMoreItems = projects.length > maxVisibleItems;
+
+  const visibleProjects = isExpanded ? projects : projects.slice(0, maxVisibleItems);
 
   return (
     <div className="py-8 px-4">
@@ -155,16 +132,57 @@ const Projects: React.FC = () => {
         projects
       </h1>
       <div className="max-w-2xl">
-        {projects.map((project, index) => (
+        {visibleProjects.map((project, index) => (
           <ProjectItem
             key={index}
             title={project.title}
             link={project.link}
             logo={project.logo}
             description={project.description}
-            preview={project.preview}
           />
         ))}
+        {hasMoreItems && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="mt-2 text-sm text-[var(--link)] hover:underline flex items-center gap-1 transition-colors cursor-pointer"
+          >
+            {isExpanded ? (
+              <>
+                <span>Show less</span>
+                <svg
+                  className="w-4 h-4 transition-transform duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 15l7-7 7 7"
+                  />
+                </svg>
+              </>
+            ) : (
+              <>
+                <span>Show more</span>
+                <svg
+                  className="w-4 h-4 transition-transform duration-300"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </>
+            )}
+          </button>
+        )}
       </div>
     </div>
   );

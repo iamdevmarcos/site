@@ -174,33 +174,19 @@ const WorkExperienceItem: React.FC<WorkExperienceProps> = ({
   );
 };
 
-// Collaboration logos component
 const CollaborationLogos: React.FC = () => {
-  // Company data structured in an array for better maintainability
   const companies = [
     {
-      name: "Vorld",
-      logo: "/companies/vorld.png",
-      website: "https://thevorld.com/",
+      name: "Objective",
+      logo: "/companies/objectivebr_logo.jpeg",
+      website: "https://www.objective.com.br/",
       zIndex: 40,
     },
     {
-      name: "PCG",
-      logo: "/companies/pcg.png",
-      website: "https://powerclubglobal.com/",
-      zIndex: 30,
-    },
-    {
-      name: "Avocado",
-      logo: "/companies/avocado.jpg",
-      website: "https://instadapp.io/product/avocado",
-      zIndex: 20,
-    },
-    {
-      name: "Codedamn",
-      logo: "/companies/codedamn.jpg",
-      website: "https://codedamn.com/",
-      zIndex: 10,
+      name: "Objective",
+      logo: "/companies/objectivebr_logo.jpeg",
+      website: "https://www.objective.com.br/",
+      zIndex: 40,
     },
   ];
 
@@ -231,7 +217,7 @@ const Work: React.FC = () => {
     {
       company: "Bankme",
       position: "Senior Software Engineer",
-      logo: "/companies/chatwoot_logo.jpeg",
+      logo: "/companies/bankme.jpeg",
       website: "https://www.bankme.tech/",
       description: [
         "👨🏻‍💻",
