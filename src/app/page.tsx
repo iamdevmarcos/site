@@ -81,19 +81,19 @@ export default function Home() {
           {/* Content after hero section */}
           <div
             className="relative min-h-[50vh] w-full z-0"
-            ref={projectsRef}
-            id="projects"
+            ref={workRef}
+            id="work"
           >
-            <Projects />
+            <Work />
           </div>
 
           <hr className="border-t relative w-screen left-[50%] right-[50%] -translate-x-[50%] my-8" />
           <div
             className="relative min-h-[50vh] w-full z-0"
-            ref={workRef}
-            id="work"
+            ref={projectsRef}
+            id="projects"
           >
-            <Work />
+            <Projects />
           </div>
 
           <hr className="border-t relative w-screen left-[50%] right-[50%] -translate-x-[50%] my-8" />

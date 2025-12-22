@@ -220,7 +220,7 @@ const Work: React.FC = () => {
       logo: "/companies/bankme.jpeg",
       website: "https://www.bankme.tech/",
       description: [
-        "👨🏻‍💻",
+        "Working with NestJS, PostgreSQL, TypeScript, NextJS, Docker, Github Actions, Google Cloud Platform and Windsurf.",
       ],
     },
     {
