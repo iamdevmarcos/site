@@ -5,7 +5,6 @@ import { Canvas, extend, useThree, useFrame } from "@react-three/fiber";
 import React from "react";
 
 import {
-  useGLTF,
   useTexture,
   Environment,
   Lightformer,
@@ -20,15 +19,13 @@ import {
   RapierRigidBody,
 } from "@react-three/rapier";
 import { MeshLineGeometry, MeshLineMaterial } from "meshline";
-import { GLTF } from "three-stdlib";
 import { Vector3 } from "three";
 
 // Extend Three.js with meshline components
 extend({ MeshLineGeometry, MeshLineMaterial });
-useGLTF.preload(
-  "https://assets.vercel.com/image/upload/contentful/image/e5382hct74si/5huRVDzcoDwnbgrKUo1Lzs/53b6dd7d6b4ffcdbd338fa60265949e1/tag.glb"
-);
 useTexture.preload("/band.png");
+useTexture.preload("/lanyard/bg.png");
+useTexture.preload("/lanyard/bg2.jpeg");
 
 // Add proper type declarations for the extended components
 declare global {
@@ -57,24 +54,64 @@ interface MeshLineRef {
   };
 }
 
-// Define types for GLTF models
-interface CustomGLTFResult extends GLTF {
-  nodes: {
-    card: THREE.Mesh;
-    clip: THREE.Mesh;
-    clamp: THREE.Mesh;
-    [key: string]: THREE.Object3D;
-  };
-  materials: {
-    base: THREE.MeshStandardMaterial;
-    metal: THREE.MeshStandardMaterial;
-    [key: string]: THREE.Material;
-  };
-}
-
 // Extend Rigid body to include additional properties
 interface ExtendedRigidBody extends RapierRigidBody {
   lerped?: THREE.Vector3;
+}
+
+// Shader material for rounded corners
+function createRoundedMaterial(
+  map: THREE.Texture,
+  borderRadius: number,
+  width: number,
+  height: number
+) {
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      uTexture: { value: map },
+      uBorderRadius: { value: borderRadius },
+      uSize: { value: new THREE.Vector2(width, height) },
+      uClearcoat: { value: 1.0 },
+      uClearcoatRoughness: { value: 0.15 },
+      uRoughness: { value: 0.3 },
+      uMetalness: { value: 0.5 },
+    },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }
+    `,
+    fragmentShader: `
+      uniform sampler2D uTexture;
+      uniform float uBorderRadius;
+      uniform vec2 uSize;
+      varying vec2 vUv;
+      
+      float roundedBoxSDF(vec2 centerPos, vec2 size, float radius) {
+        return length(max(abs(centerPos) - size + radius, 0.0)) - radius;
+      }
+      
+      void main() {
+        vec2 uv = vUv;
+        vec2 size = uSize * 0.5;
+        vec2 centerPos = (uv - 0.5) * uSize;
+        
+        float distOuter = roundedBoxSDF(centerPos, size, uBorderRadius);
+        
+        float alphaOuter = 1.0 - smoothstep(-0.01, 0.01, distOuter);
+        
+        if (alphaOuter < 0.01) discard;
+        
+        vec4 texColor = texture2D(uTexture, uv);
+        
+        gl_FragColor = vec4(texColor.rgb, texColor.a * alphaOuter);
+      }
+    `,
+    transparent: true,
+    side: THREE.FrontSide,
+  });
 }
 
 export default function Card() {
@@ -159,24 +196,29 @@ function Band({
     type: "dynamic",
     canSleep: true,
     colliders: false,
-    angularDamping: 3, // Increased from 2 for more stability
-    linearDamping: 3, // Increased from 2 for more stability
+    angularDamping: 3, 
+    linearDamping: 3,
   } as const;
 
-  // First cast to unknown, then to CustomGLTFResult to avoid TypeScript casting errors
-  const gltf = useGLTF(
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:3000/Dakshie.glb"
-      : "https://dakshie.xyz/Dakshie.glb"
-  );
-  const { nodes, materials } = gltf as unknown as CustomGLTFResult;
-
-  const texture = useTexture(
-    process.env.NODE_ENV === "development"
-      ? "http://localhost:3000/band.png"
-      : "https://dakshie.xyz/band.png"
-  );
+  const frontTexture = useTexture(`/lanyard/bg_3.png`);
+  const backTexture = useTexture(`/lanyard/bg.jpeg`);
+  const texture = useTexture(`/band.jpeg`);
   const { width, height } = useThree((state) => state.size);
+
+  const cardWidth = 3.5;
+  const cardHeight = 4.5;
+  const borderRadius = 0.123; // 16px converted to 3D units
+  
+  // Create rounded materials for front and back
+  const frontRoundedMaterial = React.useMemo(
+    () => createRoundedMaterial(frontTexture, borderRadius, cardWidth, cardHeight),
+    [frontTexture, borderRadius, cardWidth, cardHeight]
+  );
+  
+  const backRoundedMaterial = React.useMemo(
+    () => createRoundedMaterial(backTexture, borderRadius, cardWidth, cardHeight),
+    [backTexture, borderRadius, cardWidth, cardHeight]
+  );
   const [curve] = useState(
     () =>
       new THREE.CatmullRomCurve3([
@@ -196,13 +238,12 @@ function Band({
   const j3Ref = j3 as unknown as React.RefObject<RapierRigidBody>;
   const cardRef = card as unknown as React.RefObject<RapierRigidBody>;
 
-  // Using slightly longer rope distances to reduce tension
-  useRopeJoint(fixedRef, j1Ref, [[0, 0, 0], [0, 0, 0], 0.8]); // Increased from 1
-  useRopeJoint(j1Ref, j2Ref, [[0, 0, 0], [0, 0, 0], 0.8]); // Increased from 1
-  useRopeJoint(j2Ref, j3Ref, [[0, 0, 0], [0, 0, 0], 0.8]); // Increased from 1
+  useRopeJoint(fixedRef, j1Ref, [[0, 0, 0], [0, 0, 0], 0.8]); 
+  useRopeJoint(j1Ref, j2Ref, [[0, 0, 0], [0, 0, 0], 0.8]); 
+  useRopeJoint(j2Ref, j3Ref, [[0, 0, 0], [0, 0, 0], 0.8]); 
   useSphericalJoint(j3Ref, cardRef, [
     [0, 0, 0],
-    [0, 2.35, 0],
+    [0, 1.05, 0],
   ]);
 
   useEffect(() => {
@@ -212,21 +253,17 @@ function Band({
     }
   }, [hovered, dragged]);
 
-  // Use a debounce mechanism to reduce excessive physics updates
   const lastUpdateTime = useRef(0);
 
   useFrame((state, delta) => {
     const currentTime = state.clock.getElapsedTime();
 
-    // Handle dragging with smoother transitions
     if (dragged && card.current) {
       vec.set(state.pointer.x, state.pointer.y, 0.5).unproject(state.camera);
       dir.copy(vec).sub(state.camera.position).normalize();
       vec.add(dir.multiplyScalar(state.camera.position.length()));
 
-      // Only wake up the bodies when necessary
       if (currentTime - lastUpdateTime.current > 0.016) {
-        // ~60fps cap
         [card, j1, j2, j3, fixed].forEach((ref) => ref.current?.wakeUp());
         lastUpdateTime.current = currentTime;
       }
@@ -239,7 +276,6 @@ function Band({
     }
 
     if (fixed.current && band.current) {
-      // Fix most of the jitter when over pulling the card with improved lerping
       [j1, j2].forEach((ref) => {
         const rigidBody = ref.current as ExtendedRigidBody;
         if (rigidBody) {
@@ -249,13 +285,11 @@ function Band({
             );
           }
 
-          // More gradual lerping for smoother movement
           const clampedDistance = Math.max(
             0.1,
             Math.min(1, rigidBody.lerped.distanceTo(rigidBody.translation()))
           );
 
-          // Smoother lerping with adjusted delta
           const lerpSpeed = minSpeed + clampedDistance * (maxSpeed - minSpeed);
           rigidBody.lerped.lerp(
             rigidBody.translation(),
@@ -264,7 +298,6 @@ function Band({
         }
       });
 
-      // Calculate catmull curve with more precision
       if (j3.current && j2.current && j1.current) {
         const j2Body = j2.current as ExtendedRigidBody;
         const j1Body = j1.current as ExtendedRigidBody;
@@ -274,17 +307,14 @@ function Band({
         if (j1Body.lerped) curve.points[2].copy(j1Body.lerped);
         curve.points[3].copy(fixed.current.translation());
 
-        // Increased point count for smoother curve
-        band.current.geometry.setPoints(curve.getPoints(64)); // Increased from 32
+        band.current.geometry.setPoints(curve.getPoints(64)); 
 
-        // More gentle tilt correction to prevent jitter
         if (card.current) {
           ang.copy(card.current.angvel());
           rot.copy(card.current.rotation());
-          // Fix the setAngvel call with proper wake parameter
           card.current.setAngvel(
             { x: ang.x, y: ang.y - rot.y * 0.2, z: ang.z },
-            true // Wake the body
+            true 
           );
         }
       }
@@ -313,10 +343,10 @@ function Band({
           {...segmentProps}
           type={dragged ? "kinematicPosition" : "dynamic"}
         >
-          <CuboidCollider args={[0.8, 1.125, 0.01]} />
+          <CuboidCollider args={[0.2, 0.31, 0.01]} />
           <group
-            scale={3}
-            position={[0, -1.2, -0.05]}
+            scale={0.65}
+            position={[0, -0.4, -0.05]}
             onPointerOver={() => hover(true)}
             onPointerOut={() => hover(false)}
             onPointerUp={(e) => {
@@ -336,23 +366,16 @@ function Band({
               }
             }}
           >
-            <mesh geometry={nodes.card.geometry}>
-              <meshPhysicalMaterial
-                map={materials.base.map}
-                map-anisotropy={16}
-                clearcoat={1}
-                clearcoatRoughness={0.15}
-                roughness={0.3}
-                metalness={0.5}
-                transparent={true} // Enable transparency on the material
-              />
+            {/* Front of card */}
+            <mesh position={[0, 0, 0.01]}>
+              <planeGeometry args={[cardWidth, cardHeight]} />
+              <primitive object={frontRoundedMaterial} attach="material" />
             </mesh>
-            <mesh
-              geometry={nodes.clip.geometry}
-              material={materials.metal}
-              material-roughness={0.3}
-            />
-            <mesh geometry={nodes.clamp.geometry} material={materials.metal} />
+            {/* Back of card */}
+            <mesh position={[0, 0, -0.01]} rotation={[0, Math.PI, 0]}>
+              <planeGeometry args={[cardWidth, cardHeight]} />
+              <primitive object={backRoundedMaterial} attach="material" />
+            </mesh>
           </group>
         </RigidBody>
       </group>

@@ -1,176 +1,227 @@
 "use client";
-import React, { useEffect, useRef } from "react";
-import { useInView } from "react-intersection-observer";
+import React, { useState, useRef, useEffect } from "react";
 
-interface PolaroidProps {
+interface MomentCardProps {
   image: string;
   description: string;
   alt: string;
+  className?: string;
 }
 
-const Polaroid: React.FC<PolaroidProps> = ({ image, description, alt }) => {
+const MomentCard: React.FC<MomentCardProps> = ({
+  image,
+  description,
+  alt,
+  className = "",
+}) => {
   return (
-    <div className="polaroid-card min-w-[200px] sm:min-w-80 bg-white p-2 sm:p-4 pb-4 sm:pb-6 shadow-xl m-2 sm:m-4 transition-transform duration-300 hover:-rotate-2 hover:scale-105 relative before:absolute before:inset-0 before:shadow-md before:content-[''] before:z-[-1]">
-      <div className="mb-2 sm:mb-4 h-48 sm:h-80 overflow-hidden">
-        <img
-          src={image}
-          alt={alt}
-          className="w-full h-full object-cover"
-          loading="lazy"
-        />
+    <div className={`relative flex-shrink-0 ${className}`}>
+      <div className="absolute inset-px rounded-lg bg-[var(--background)]" />
+      <div className="relative flex h-full flex-col overflow-hidden rounded-[calc(var(--radius-lg)+1px)]">
+        <div className="relative h-full w-full grow overflow-hidden">
+          <img
+            src={image}
+            alt={alt}
+            className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6">
+            <p className="text-sm font-medium text-white">{description}</p>
+          </div>
+        </div>
       </div>
-      <div className="polaroid-text text-xs sm:text-sm text-black p-1 sm:p-2 text-center">
-        {description}
-      </div>
+      <div className="pointer-events-none absolute inset-px rounded-lg shadow-sm outline outline-black/5" />
     </div>
   );
 };
 
 const Moments: React.FC = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Use intersection observer to only animate when in view
-  const { ref: inViewRef, inView } = useInView({
-    threshold: 0.1,
-    triggerOnce: false,
-  });
-
-  // Combine both refs
-  const setRefs = (node: HTMLDivElement | null) => {
-    scrollRef.current = node;
-    if (typeof inViewRef === "function") {
-      inViewRef(node);
-    }
-  };
-
-  const polaroids = [
+  const moments = [
     {
-      image: "/moments/appwrite-community.jpeg",
+      image: "/mymoments/1.jpeg",
       description: "Appwrite Delhi community",
       alt: "Appwrite community",
     },
     {
-      image: "/moments/avocado-speaker.jpeg",
+      image: "/mymoments/2.jpeg",
       description: "Avo Connect Delhi",
       alt: "Avocado speaker",
     },
     {
-      image: "/moments/dinner.png",
+      image: "/mymoments/3.jpeg",
       description: "Team Dinner",
-      alt: "Avocado speaker",
+      alt: "Team Dinner",
     },
     {
-      image: "/moments/breakpoint.jpeg",
+      image: "/mymoments/4.jpeg",
       description: "Solana Breakpoint - Singapore 2024",
       alt: "Solana Breakpoint",
     },
     {
-      image: "/moments/delhi-meetup.jpeg",
+      image: "/mymoments/5.jpeg",
       description: "Delhi Tech Meetup 2024",
       alt: "Delhi Tech Meetup",
     },
     {
-      image: "/moments/appwrite-coop.png",
+      image: "/mymoments/6.jpeg",
       description: "Appwrite Team❤️",
       alt: "Appwrite Team",
     },
     {
-      image: "/moments/avocado-laptop.jpeg",
+      image: "/mymoments/7.jpeg",
       description: "Avocado Connect - Bennett University",
-      alt: "Delhi Tech Meetup",
-    },
-    {
-      image: "/moments/first-time-speaker.jpeg",
-      description: "Appwrite Developer Meetup - Delhi",
-      alt: "First time speaking",
-    },
-    {
-      image: "/moments/s5-graduate.jpeg",
-      description: "Graduated from Buildspace",
-      alt: "Buildspace graduation",
-    },
-    {
-      image: "/moments/shefi.jpeg",
-      description: "Shefi - Women in Crypto",
-      alt: "SHEfi community",
+      alt: "Avocado Connect",
     },
   ];
 
-  // Continuous auto-scrolling effect that doesn't pause on hover
+  const maxIndex = Math.ceil(moments.length / 3) - 1;
+
+  // Auto-scroll carousel
   useEffect(() => {
-    const scrollContainer = scrollRef.current;
-    if (!scrollContainer) return;
+    if (isPaused) return;
 
-    let animationId: number;
-    let lastTimestamp: number = 0;
-    let scrollPos = 0;
-    const scrollSpeed = 0.5; // Slow and steady scroll speed
-
-    // Calculate max scroll position once
-    const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-
-    const scroll = (timestamp: number) => {
-      if (!scrollContainer || !inView) return;
-
-      // Throttle animation to reduce CPU usage
-      if (timestamp - lastTimestamp > 16) {
-        // ~60fps max
-        lastTimestamp = timestamp;
-
-        scrollPos += scrollSpeed;
-
-        // Reset when we reach the end - jump back to start smoothly
-        if (scrollPos >= maxScroll) {
-          scrollPos = 0;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => {
+        if (prev >= maxIndex) {
+          return 0;
         }
+        return prev + 1;
+      });
+    }, 4000); // Change slide every 4 seconds
 
-        scrollContainer.scrollLeft = scrollPos;
-      }
+    return () => clearInterval(interval);
+  }, [isPaused, maxIndex]);
 
-      animationId = requestAnimationFrame(scroll);
-    };
+  // Scroll to current slide
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
 
-    // Only start animation if component is in view
-    if (inView) {
-      animationId = requestAnimationFrame(scroll);
+    const cardWidth = container.clientWidth / 3;
+    container.scrollTo({
+      left: currentIndex * cardWidth * 3,
+      behavior: "smooth",
+    });
+  }, [currentIndex]);
+
+  const goToSlide = (index: number) => {
+    setCurrentIndex(index);
+  };
+
+  // Mouse drag handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const container = scrollRef.current;
+    if (!container) return;
+    
+    setIsDragging(true);
+    setIsPaused(true);
+    setStartX(e.pageX - container.offsetLeft);
+    setScrollLeft(container.scrollLeft);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    
+    const container = scrollRef.current;
+    if (!container) return;
+    
+    const x = e.pageX - container.offsetLeft;
+    const walk = (x - startX) * 2; // Scroll speed multiplier
+    container.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseUp = () => {
+    if (!isDragging) return;
+    
+    setIsDragging(false);
+    setIsPaused(false);
+    
+    // Snap to nearest slide
+    const container = scrollRef.current;
+    if (!container) return;
+    
+    const cardWidth = container.clientWidth / 3;
+    const newIndex = Math.round(container.scrollLeft / (cardWidth * 3));
+    const clampedIndex = Math.max(0, Math.min(newIndex, maxIndex));
+    setCurrentIndex(clampedIndex);
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      handleMouseUp();
     }
-
-    return () => {
-      cancelAnimationFrame(animationId);
-    };
-  }, [inView]);
+  };
 
   return (
     <div className="py-8">
       <h1 className="text-3xl font-bold mb-6 text-[var(--foreground)] px-4">
         moments
       </h1>
-      <div className="max-w-2xl px-4">
+      <div className="max-w-2xl px-4 mb-10">
         <p className="mb-6 text-base text-[var(--foreground)]">
           Tbh I&apos;m still figuring it out. Here&apos;s a small glimpse of my
           journey so far.
         </p>
       </div>
 
-      <div className="relative w-full overflow-x-hidden overflow-y-visible">
+      <div className="relative mx-auto max-w-7xl">
+        {/* Carousel container */}
         <div
-          ref={setRefs}
-          className="flex carousel overflow-x-auto scrollbar-hide !overflow-y-visible py-4"
+          ref={scrollRef}
+          className={`flex overflow-x-hidden scrollbar-hide scroll-smooth ${
+            isDragging ? "cursor-grabbing" : "cursor-grab"
+          }`}
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          onMouseEnter={() => !isDragging && setIsPaused(true)}
+          onMouseLeave={() => {
+            handleMouseLeave();
+            if (!isDragging) setIsPaused(false);
+          }}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
         >
-          {/* Add polaroids with repeated items at the end for seamless looping */}
-          {polaroids.concat(polaroids.slice(0, 5)).map((polaroid, index) => (
-            <Polaroid
-              key={index}
-              image={polaroid.image}
-              description={polaroid.description}
-              alt={polaroid.alt}
-            />
-          ))}
+          <div className="flex gap-4">
+            {moments.map((moment, index) => (
+              <MomentCard
+                key={index}
+                image={moment.image}
+                description={moment.description}
+                alt={moment.alt}
+                className="w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(33.333%-1.067rem)] min-h-[200px] sm:min-h-[250px] lg:min-h-[280px]"
+              />
+            ))}
+          </div>
         </div>
+
+        {/* Navigation dots */}
+        {maxIndex > 0 && (
+          <div className="flex justify-center gap-2 mt-6">
+            {Array.from({ length: maxIndex + 1 }).map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`h-2 rounded-full transition-all ${
+                  currentIndex === index
+                    ? "w-8 bg-[var(--foreground)]"
+                    : "w-2 bg-[var(--muted-foreground)]"
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Add this style to hide scrollbar */}
       <style jsx global>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;

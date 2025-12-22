@@ -56,14 +56,14 @@ export default function Home() {
   }, []);
 
   return (
-    <ThemeProvider defaultTheme="system" storageKey="dakshi-theme">
+    <ThemeProvider defaultTheme="light" storageKey="marcos-theme">
       <div className="min-h-screen p-0 font-[family-name:var(--font-geist-sans)]">
-        {/* <div
+        <div
           className="card-wrapper mr-10 hidden lg:block"
           style={{ height: cardHeight, position: "absolute", top: 0, right: 0 }}
         >
           <Card />
-        </div> */}
+        </div>
 
         {/* Main content area */}
         <div className="relative">
@@ -73,7 +73,7 @@ export default function Home() {
           </header>
 
           {/* Hero section with lower z-index to appear below card */}
-          <div className="hero-section relative z-0" ref={heroRef} id="hero">
+          <div className="hero-section relative z-30" ref={heroRef} id="hero">
             <Hero />
           </div>
           <hr className="border-t relative w-screen left-[50%] right-[50%] -translate-x-[50%] my-8" />
@@ -102,10 +102,9 @@ export default function Home() {
           </div>
 
           <hr className="border-t relative w-screen left-[50%] right-[50%] -translate-x-[50%] my-8" />
-          <div className="relative min-h-[50vh] w-full z-0" id="newsletter">
+          <div className="relative w-full z-0" id="newsletter">
             <Newsletter />
           </div>
-          <hr className="border-t relative w-screen left-[50%] right-[50%] -translate-x-[50%] my-8" />
         </div>
       </div>
     </ThemeProvider>

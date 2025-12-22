@@ -9,61 +9,12 @@ interface WorkExperienceProps {
   website?: string;
 }
 
-interface LinkWithTooltipProps {
-  href: string;
-  text: string;
-  description?: string;
-}
-
 interface CompanyLogoProps {
   src: string;
   alt: string;
   href: string;
   zIndex: number;
 }
-
-// Reusable link component with tooltip
-const LinkWithTooltip: React.FC<LinkWithTooltipProps> = ({
-  href,
-  text,
-  description,
-}) => {
-  const [isHovered, setIsHovered] = useState(false);
-
-  return (
-    <span className="relative inline-block">
-      <a
-        href={href}
-        className="text-[var(--muted-foreground)] text-sm underline decoration-[1px] underline-offset-3 decoration-[var(--muted-foreground)] cursor-pointer group inline-flex items-center"
-        target="_blank"
-        rel="noopener noreferrer"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {text}
-        <svg
-          className="w-3 h-3 ml-0.5 inline-block"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <line x1="7" y1="17" x2="17" y2="7"></line>
-          <polyline points="7 7 17 7 17 17"></polyline>
-        </svg>
-      </a>
-
-      {description && isHovered && (
-        <div className="absolute z-10 left-0 -bottom-24 w-64 p-3 shadow-lg bg-[var(--tooltip)] border border-[var(--tooltip-border)] rounded text-sm text-[var(--tooltip-foreground)]">
-          {description}
-          <div className="absolute -top-2 left-3 w-4 h-4 bg-[var(--tooltip)] border-t border-l border-[var(--tooltip-border)] transform rotate-45"></div>
-        </div>
-      )}
-    </span>
-  );
-};
 
 // Company logo component with website link and hover effect
 const CompanyLogo: React.FC<CompanyLogoProps> = ({
@@ -107,6 +58,10 @@ const WorkExperienceItem: React.FC<WorkExperienceProps> = ({
   logo,
   website,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const maxVisibleItems = 3;
+  const hasMoreItems = description.length > maxVisibleItems;
+
   return (
     <div className="mb-8">
       <div className="flex items-start">
@@ -135,7 +90,7 @@ const WorkExperienceItem: React.FC<WorkExperienceProps> = ({
           </div>
         )}
 
-        <div>
+        <div className="flex-1">
           <h3 className="text-base font-medium text-[var(--foreground)]">
             {website ? (
               <a
@@ -154,12 +109,65 @@ const WorkExperienceItem: React.FC<WorkExperienceProps> = ({
             {position}
           </p>
           <ul className="text-sm text-[var(--foreground)] list-disc pl-4 marker:text-[var(--muted-foreground)]">
-            {description.map((item, index) => (
-              <li key={index} className="mb-2">
-                {item}
-              </li>
-            ))}
+            {description.map((item, index) => {
+              const isVisible = index < maxVisibleItems || isExpanded;
+              if (!isVisible) return null;
+              return (
+                <li
+                  key={index}
+                  className="mb-2 transition-all duration-300 ease-in-out"
+                  style={{
+                    opacity: 1,
+                    transform: 'translateY(0)',
+                  }}
+                >
+                  {item}
+                </li>
+              );
+            })}
           </ul>
+          {hasMoreItems && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="mt-2 text-sm text-[var(--link)] hover:underline flex items-center gap-1 transition-colors cursor-pointer"
+            >
+              {isExpanded ? (
+                <>
+                  <span>Show less</span>
+                  <svg
+                    className="w-4 h-4 transition-transform duration-300"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 15l7-7 7 7"
+                    />
+                  </svg>
+                </>
+              ) : (
+                <>
+                  <span>Show more</span>
+                  <svg
+                    className="w-4 h-4 transition-transform duration-300"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -219,52 +227,82 @@ const CollaborationLogos: React.FC = () => {
 };
 
 const Work: React.FC = () => {
-  // Work experience data structured in an array
   const workExperiences = [
     {
-      company: "Shieldify",
-      position: "Frontend Engineering Intern",
-      logo: "/companies/shieldify.png",
-      website: "https://shieldify.com/",
+      company: "Bankme",
+      position: "Senior Software Engineer",
+      logo: "/companies/chatwoot_logo.jpeg",
+      website: "https://www.bankme.tech/",
       description: [
-        "Built customer onboarding dashboard, implemented reporting a chargeback flow.",
-        "Created blogs in marketing website, integrated headless CMS for blog management.",
+        "👨🏻‍💻",
       ],
     },
     {
-      company: "Appwrite",
-      position: "Developer Advocate Intern",
-      logo: "/companies/appwrite.png",
-      website: "https://appwrite.io/",
+      company: "Chatwoot",
+      position: "Senior Software Engineer",
+      logo: "/companies/chatwoot_logo.jpeg",
+      website: "https://www.chatwoot.com/",
       description: [
-        <>
-          Contributed to Appwrite&apos;s official documentation on{" "}
-          <LinkWithTooltip
-            href="https://github.com/appwrite/website/pull/138"
-            text="OAuth integration"
-          />
-        </>,
-        <>
-          Worked on a{" "}
-          <LinkWithTooltip
-            href="https://github.com/appwrite/awesome-appwrite/pull/498"
-            text="full stack website"
-          />{" "}
-          with Appwrite, made a{" "}
-          <LinkWithTooltip
-            href="https://duckshie.notion.site/Building-Jobwrite-A-Smart-Job-Search-Platform-using-React-and-Appwrite-21f98b37c7054af3917df6ef1ff1c522"
-            text="blog"
-          />{" "}
-          and{" "}
-          <LinkWithTooltip
-            href="https://www.youtube.com/watch?v=9z_Rz-13Hm0"
-            text="video"
-          />{" "}
-          tutorial.
-        </>,
-        "Organized developer meetup in Delhi, hands-on session on OAuth2 architecture.",
+        "Contributing to the development and evolution of a SaaS customer support and engagement product, focused on centralizing multi-channel interactions and improving support team.",
+        "Provided technical leadership, making architectural decisions to ensure scalability, maintainability, and overall product quality.",
+        "Developed and maintained backend services using Ruby on Rails, focusing on performance, reliability, and solid domain modeling.",
+        "Built and evolved frontend features using Vue.js, emphasizing usability, responsiveness, and clean code organization.",
+        "Designed and maintained Docker environments for development and production, ensuring consistency across environments.",
+        "Collaborated closely with Product, Business, and Design teams to translate business requirements into effective technical solutions.",
+        "Contributed to omnichannel support capabilities, including centralized inboxes (live chat, WhatsApp, Instagram) and automation workflows.",
+        "Conducted code reviews, enforced coding standards, and promoted clean, maintainable code.",
+        "Mentored team members and supported technical decision-making, balancing short-term delivery with long-term product evolution.",
+        "Tech Stack: Ruby on Rails, Vue.js, Docker, Github Actions, AWS, Cursor AI, N8N",
       ],
     },
+    {
+      company: "Pluxee",
+      position: "Software Engineer",
+      logo: "/companies/pluxee_logo.jpeg",
+      website: "https://www.pluxee.com/",
+      description: [
+        "Leading a Frontend team, responsible for develop/deploy new features, mentoring other developers and collaborating closely with the UX Design, Product Team and Backend Team.",
+        "Integrating LLMs in the frontend, using the Gemini API to create an intelligent virtual assistant for a back-office system.",
+        "Continuous Integration/Deployment Pipeline Integration, pull requests, code reviews, unit/integration/e2e testing.",
+        "Using AI-based coding tools like Cursor to increase productivity and mentoring other developers on effective usage.",
+        
+        "Implementing and scaling an enterprise frontend project with internationalization for multiple countries.",
+        "Refactoring existing code to improve readability and eliminate duplications.",
+        "Supporting the UX Design team with technical validations for new features.",
+        "Collaborating with the Product team on business rules, Jira management, and task delegation.",
+        "Implementing Scrum methodology with a workflow that includes columns for Ready for Development, In Development, Code Review, QA, Product Manager Validation, and Deploy to Production.",
+        "Helping the Backend team in creating, fixing, and maintaining various micro-services for credit management. Using Java, Spring Boot, micro-services and Azure cloud technologies",
+        "Tools Frontend: TypeScript, React, Jest, Cypress, Chakra UI & Context API",
+        "Tools Backend: Java, Spring Boot, JPA, Maven, PostgreSQL, Redis & Azure DevOps",
+      ],
+    },
+    {
+      company: "Merck",
+      position: "Frontend Engineer",
+      logo: "/companies/merck_logo.jpeg",
+      website: "https://www.merck.com/",
+      description: [
+        "Developing modern and responsive websites and systems, implementing full-cycle new features involving both frontend and backend aspects of the product.",
+        "Implemented and maintained boilerplate for different projects.",
+        "Using Jest and Cypress to create large-scale, automated tests.",
+        "Reinforce code standards - set up linter, formatter and git hooks.",
+        "Implement shared complex form validations using React Hook Form and Yup.",
+        "Tools: TypeScript, React, Next.js, Jest, Styled Components, Hooks, Redux & Context API",
+      ],
+    },
+    {
+      company: "upcubo",
+      position: "Software Developer",
+      logo: "/companies/upcubo_logo.jpeg",
+      website: "https://upcubo.com/",
+      description: [
+        "Using Next.js (or React Native for mobile) and Styled Components to develop the frontend of applications, ensuring a modern and responsive user experience.",
+        "Engineering a robust backend with Node.js, and MySQL, and ensuring seamless delivery to production.",
+        "Integrating third-party APIs and services to enhance application functionality.",
+        "Conducting code reviews and maintaining coding standards to ensure code quality.",
+        "Utilizing version control systems (Git) for efficient collaboration and code management.",
+      ],
+    }
   ];
 
   return (
