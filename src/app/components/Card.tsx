@@ -23,9 +23,9 @@ import { Vector3 } from "three";
 
 // Extend Three.js with meshline components
 extend({ MeshLineGeometry, MeshLineMaterial });
-useTexture.preload("/band.png");
-useTexture.preload("/lanyard/bg.png");
-useTexture.preload("/lanyard/bg2.jpeg");
+useTexture.preload("/band.jpeg");
+useTexture.preload("/lanyard/bg_3.png");
+useTexture.preload("/lanyard/bg.jpeg");
 
 // Add proper type declarations for the extended components
 declare global {
@@ -196,8 +196,8 @@ function Band({
     type: "dynamic",
     canSleep: true,
     colliders: false,
-    angularDamping: 3, 
-    linearDamping: 3,
+    angularDamping: 5, 
+    linearDamping: 5,
   } as const;
 
   const frontTexture = useTexture(`/lanyard/bg_3.png`);
@@ -328,17 +328,17 @@ function Band({
     <>
       <group position={[position[0], position[1] + 4, position[2]]}>
         <RigidBody ref={fixed} {...segmentProps} type="fixed" />
-        <RigidBody position={[0.5, 0, 0]} ref={j1} {...segmentProps}>
+        <RigidBody position={[0.3, 0, 0]} ref={j1} {...segmentProps}>
           <BallCollider args={[0.1]} />
         </RigidBody>
-        <RigidBody position={[1, 0, 0]} ref={j2} {...segmentProps}>
+        <RigidBody position={[0.6, 0, 0]} ref={j2} {...segmentProps}>
           <BallCollider args={[0.1]} />
         </RigidBody>
-        <RigidBody position={[1.5, 0, 0]} ref={j3} {...segmentProps}>
+        <RigidBody position={[0.9, 0, 0]} ref={j3} {...segmentProps}>
           <BallCollider args={[0.1]} />
         </RigidBody>
         <RigidBody
-          position={[2, 0, 0]}
+          position={[1.2, 0, 0]}
           ref={card}
           {...segmentProps}
           type={dragged ? "kinematicPosition" : "dynamic"}
@@ -379,14 +379,14 @@ function Band({
           </group>
         </RigidBody>
       </group>
-      {React.createElement("mesh", { ref: band }, [
+      {React.createElement("mesh", { ref: band, position: [0, 0, -0.1] }, [
         React.createElement("meshLineGeometry", { key: "geometry" }, null),
         React.createElement(
           "meshLineMaterial",
           {
             key: "material",
             color: "white",
-            depthTest: false,
+            depthTest: true,
             resolution: [width, height],
             useMap: true,
             map: texture,

@@ -8,6 +8,7 @@ import { ThemeProvider } from "./theme-provider";
 import Projects from "./components/Projects";
 import Work from "./components/Work";
 import Moments from "./components/Moments";
+import Blog from "./components/Blog";
 import Newsletter from "./components/Newsletter";
 
 export default function Home() {
@@ -17,10 +18,8 @@ export default function Home() {
   const projectsRef = useRef<HTMLDivElement>(null);
   const workRef = useRef<HTMLDivElement>(null);
 
-  // Calculate and update the card height based on content
   useEffect(() => {
     const calculateHeight = () => {
-      // Wait for DOM to be fully rendered
       setTimeout(() => {
         if (
           headerRef.current &&
@@ -28,30 +27,23 @@ export default function Home() {
           projectsRef.current &&
           workRef.current
         ) {
-          // Get the top position of header
           const headerTop =
             headerRef.current.getBoundingClientRect().top + window.scrollY;
 
-          // Get the bottom position of work section
-          const workBottom =
-            workRef.current.getBoundingClientRect().bottom + window.scrollY;
+          const projectsBottom =
+            projectsRef.current.getBoundingClientRect().bottom + window.scrollY;
 
-          // Calculate the total height from header to work section
-          const totalHeight = workBottom - headerTop;
+          const totalHeight = projectsBottom - headerTop;
 
-          // Set the card height
           setCardHeight(`${totalHeight + 30}px`);
         }
       }, 100);
     };
 
-    // Calculate on initial render
     calculateHeight();
 
-    // Recalculate on window resize
     window.addEventListener("resize", calculateHeight);
 
-    // Cleanup
     return () => window.removeEventListener("resize", calculateHeight);
   }, []);
 
@@ -65,26 +57,27 @@ export default function Home() {
           <Card />
         </div>
 
-        {/* Main content area */}
         <div className="relative">
-          {/* Header with higher z-index to appear above card */}
           <header className="relative z-20 " ref={headerRef}>
             <Header />
           </header>
 
-          {/* Hero section with lower z-index to appear below card */}
           <div className="hero-section relative z-30" ref={heroRef} id="hero">
             <Hero />
           </div>
           <hr className="border-t relative w-screen left-[50%] right-[50%] -translate-x-[50%] my-8" />
 
-          {/* Content after hero section */}
           <div
             className="relative min-h-[50vh] w-full z-0"
             ref={workRef}
             id="work"
           >
             <Work />
+          </div>
+
+          <hr className="border-t relative w-screen left-[50%] right-[50%] -translate-x-[50%] my-8" />
+          <div className="relative min-h-[50vh] w-full z-0" id="blog">
+            <Blog />
           </div>
 
           <hr className="border-t relative w-screen left-[50%] right-[50%] -translate-x-[50%] my-8" />

@@ -83,6 +83,14 @@ function Header() {
             </li>
             <li>
               <button
+                onClick={() => scrollToSection("blog")}
+                className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+              >
+                blog
+              </button>
+            </li>
+            <li>
+              <button
                 onClick={() => scrollToSection("newsletter")}
                 className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
               >
@@ -140,6 +148,14 @@ function Header() {
                 className="text-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
               >
                 moments
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => scrollToSection("blog")}
+                className="text-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+              >
+                blog
               </button>
             </li>
             <li>
