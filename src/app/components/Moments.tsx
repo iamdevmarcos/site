@@ -47,44 +47,53 @@ const Moments: React.FC = () => {
   const moments = [
     {
       image: "/mymoments/1.jpeg",
-      description: "Appwrite Delhi community",
-      alt: "Appwrite community",
+      description: "One of my favorite books, 14 Habits of Highly Productive Developers",
+      alt: "14 habits of highly productive developers",
+    },
+    {
+      image: "/mymoments/10.jpeg",
+      description: "Building 🤓",
+      alt: "Building",
+    },
+    {
+      image: "/mymoments/8.jpeg",
+      description: "React Conf 🎉",
+      alt: "React Conf",
     },
     {
       image: "/mymoments/2.jpeg",
-      description: "Avo Connect Delhi",
-      alt: "Avocado speaker",
+      description: "Love this vibe",
+      alt: "Love this vibe",
     },
     {
       image: "/mymoments/3.jpeg",
-      description: "Team Dinner",
-      alt: "Team Dinner",
+      description: "My cat being photogenic",
+      alt: "My cat being photogenic",
     },
     {
       image: "/mymoments/4.jpeg",
-      description: "Solana Breakpoint - Singapore 2024",
-      alt: "Solana Breakpoint",
+      description: "Running in the park 👟",
+      alt: "Running in the park",
     },
     {
       image: "/mymoments/5.jpeg",
-      description: "Delhi Tech Meetup 2024",
-      alt: "Delhi Tech Meetup",
-    },
-    {
-      image: "/mymoments/6.jpeg",
-      description: "Appwrite Team❤️",
-      alt: "Appwrite Team",
+      description: "Pizza Time 🍕",
+      alt: "Pizza Time",
     },
     {
       image: "/mymoments/7.jpeg",
-      description: "Avocado Connect - Bennett University",
-      alt: "Avocado Connect",
+      description: "My favorite weather 🥶",
+      alt: "My favorite weather",
+    },
+    {
+      image: "/mymoments/9.jpeg",
+      description: "Gym 💪",
+      alt: "Gym",
     },
   ];
 
   const maxIndex = Math.ceil(moments.length / 3) - 1;
 
-  // Auto-scroll carousel
   useEffect(() => {
     if (isPaused) return;
 
@@ -95,12 +104,11 @@ const Moments: React.FC = () => {
         }
         return prev + 1;
       });
-    }, 4000); // Change slide every 4 seconds
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [isPaused, maxIndex]);
 
-  // Scroll to current slide
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
@@ -116,7 +124,6 @@ const Moments: React.FC = () => {
     setCurrentIndex(index);
   };
 
-  // Mouse drag handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     const container = scrollRef.current;
     if (!container) return;
@@ -135,7 +142,7 @@ const Moments: React.FC = () => {
     if (!container) return;
     
     const x = e.pageX - container.offsetLeft;
-    const walk = (x - startX) * 2; // Scroll speed multiplier
+    const walk = (x - startX) * 2;
     container.scrollLeft = scrollLeft - walk;
   };
 
@@ -145,7 +152,6 @@ const Moments: React.FC = () => {
     setIsDragging(false);
     setIsPaused(false);
     
-    // Snap to nearest slide
     const container = scrollRef.current;
     if (!container) return;
     
@@ -174,7 +180,6 @@ const Moments: React.FC = () => {
       </div>
 
       <div className="relative mx-auto max-w-7xl">
-        {/* Carousel container */}
         <div
           ref={scrollRef}
           className={`flex overflow-x-hidden scrollbar-hide scroll-smooth ${
@@ -203,7 +208,6 @@ const Moments: React.FC = () => {
           </div>
         </div>
 
-        {/* Navigation dots */}
         {maxIndex > 0 && (
           <div className="flex justify-center gap-2 mt-6">
             {Array.from({ length: maxIndex + 1 }).map((_, index) => (
