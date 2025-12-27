@@ -34,6 +34,11 @@ function Header() {
     }
   };
 
+  const menuItemDesktop =
+    "text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors cursor-default";
+  const menuItemMobile =
+    "text-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors cursor-default";
+
   return (
     <div>
       <div className="flex justify-between items-center p-3 bg-background w-full z-20">
@@ -51,16 +56,9 @@ function Header() {
           <ul className="hidden sm:flex items-center gap-4 social-link">
             <li>
               <button
-                onClick={() => scrollToSection("hero")}
-                className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
-              >
-                about
-              </button>
-            </li>
-            <li>
-              <button
                 onClick={() => scrollToSection("projects")}
-                className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+                className={menuItemDesktop}
+                style={{ textTransform: "lowercase" }}
               >
                 projects
               </button>
@@ -68,34 +66,50 @@ function Header() {
             <li>
               <button
                 onClick={() => scrollToSection("work")}
-                className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+                className={menuItemDesktop}
+                style={{ textTransform: "lowercase" }}
               >
                 work
               </button>
             </li>
             <li>
               <button
-                onClick={() => scrollToSection("moments")}
-                className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
-              >
-                moments
-              </button>
-            </li>
-            <li>
-              <button
                 onClick={() => scrollToSection("blog")}
-                className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+                className={menuItemDesktop}
+                style={{ textTransform: "lowercase" }}
               >
                 blog
               </button>
             </li>
             <li>
               <button
-                onClick={() => scrollToSection("newsletter")}
-                className="text-sm text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+                onClick={() => scrollToSection("moments")}
+                className={menuItemDesktop}
+                style={{ textTransform: "lowercase" }}
               >
-                newsletter
+                moments
               </button>
+            </li>
+            <li>
+              <a
+                href="https://www.youtube.com/@marcosmendes90/videos"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={menuItemDesktop}
+                style={{
+                  textTransform: "lowercase",
+                  color: "var(--muted-foreground)",
+                  textDecoration: "none",
+                }}
+                onMouseOver={e =>
+                  (e.currentTarget.style.color = "var(--foreground)")
+                }
+                onMouseOut={e =>
+                  (e.currentTarget.style.color = "var(--muted-foreground)")
+                }
+              >
+                videos
+              </a>
             </li>
           </ul>
 
@@ -120,16 +134,9 @@ function Header() {
           <ul className="flex flex-col items-center gap-6 pt-8">
             <li>
               <button
-                onClick={() => scrollToSection("hero")}
-                className="text-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
-              >
-                about
-              </button>
-            </li>
-            <li>
-              <button
                 onClick={() => scrollToSection("projects")}
-                className="text-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+                className={menuItemMobile}
+                style={{ textTransform: "lowercase" }}
               >
                 projects
               </button>
@@ -137,7 +144,8 @@ function Header() {
             <li>
               <button
                 onClick={() => scrollToSection("work")}
-                className="text-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+                className={menuItemMobile}
+                style={{ textTransform: "lowercase" }}
               >
                 work
               </button>
@@ -145,7 +153,8 @@ function Header() {
             <li>
               <button
                 onClick={() => scrollToSection("moments")}
-                className="text-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+                className={menuItemMobile}
+                style={{ textTransform: "lowercase" }}
               >
                 moments
               </button>
@@ -153,18 +162,33 @@ function Header() {
             <li>
               <button
                 onClick={() => scrollToSection("blog")}
-                className="text-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+                className={menuItemMobile}
+                style={{ textTransform: "lowercase" }}
               >
                 blog
               </button>
             </li>
             <li>
-              <button
-                onClick={() => scrollToSection("newsletter")}
-                className="text-lg text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+              <a
+                href="https://www.youtube.com/@marcosmendes90/videos"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={menuItemMobile}
+                style={{
+                  textTransform: "lowercase",
+                  color: "var(--muted-foreground)",
+                  textDecoration: "none",
+                }}
+                onClick={() => setIsMenuOpen(false)}
+                onMouseOver={e =>
+                  (e.currentTarget.style.color = "var(--foreground)")
+                }
+                onMouseOut={e =>
+                  (e.currentTarget.style.color = "var(--muted-foreground)")
+                }
               >
-                newsletter
-              </button>
+                video
+              </a>
             </li>
           </ul>
         </div>
