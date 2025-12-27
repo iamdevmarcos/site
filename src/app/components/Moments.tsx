@@ -169,13 +169,12 @@ const Moments: React.FC = () => {
 
   return (
     <div className="py-8">
-      <h1 className="text-3xl font-bold mb-6 text-[var(--foreground)] px-4">
+      <h1 className="text-3xl font-bold mb-1 text-[var(--foreground)] px-4">
         moments
       </h1>
       <div className="max-w-2xl px-4 mb-10">
         <p className="mb-6 text-base text-[var(--foreground)]">
-          Tbh I&apos;m still figuring it out. Here&apos;s a small glimpse of my
-          journey so far.
+          Moments and vibes I enjoy along my journey.
         </p>
       </div>
 
