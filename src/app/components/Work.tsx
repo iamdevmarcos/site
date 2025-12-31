@@ -135,15 +135,6 @@ const WorkExperienceItem: React.FC<WorkExperienceProps> = ({
 const Work: React.FC = () => {
   const workExperiences = [
     {
-      company: "Bankme",
-      position: "Senior Software Engineer",
-      logo: "/companies/bankme.jpeg",
-      website: "https://www.bankme.tech/",
-      description: [
-        "👨🏻‍💻",
-      ],
-    },
-    {
       company: "Chatwoot",
       position: "Senior Software Engineer",
       logo: "/companies/chatwoot_logo.jpeg",

@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Marcos Mendes",
     description: "Developer building things on the internet",
-    url: "https://dakshie.xyz/",
+    url: "https://marcosmendes.com/",
     siteName: "Marcos Mendes",
     images: [
       {
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Marcos Mendes",
     description: "Developer building things on the internet",
-    creator: "@duckwhocodes",
+    creator: "@mendestsx",
     images: ["/og-image.jpg"],
   },
   icons: {
