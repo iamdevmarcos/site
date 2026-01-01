@@ -253,7 +253,11 @@ const Hero: React.FC = () => {
         </p>
 
         <p className="mb-4 text-base text-[var(--foreground)]">
-          a dev with product owner mentality ;) i like this term.
+          a dev with <LinkWithTooltip
+            text="product engineer"
+            description="i like to think about the product as a whole, and how to improve it"
+            imageUrl="/yc.jpg"
+          /> mentality ;) i like this term.
         </p>
 
         <p className="mb-8 text-base text-[var(--foreground)]">
@@ -272,9 +276,9 @@ const Hero: React.FC = () => {
             imageUrl="/moments/ds2.jpg"
           />, and {" "}
           <LinkWithTooltip
-            text="formula 1"
-            description="hamilton ferrari car"
-            imageUrl="/moments/formula1.avif"
+            text="videogames architecture"
+            description="i love the gameboy advanced sp architecture"
+            imageUrl="/moments/gbasp.jpg"
           />
 
         </p>
